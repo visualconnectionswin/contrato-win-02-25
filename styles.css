@@ -97,7 +97,7 @@ body {
   z-index: 50;
 }
 .right-sidebar:hover {
-  width: 540px;
+  width: 340px;
 }
 .right-sidebar-collapsed-text {
   position: absolute;

@@ -21,7 +21,7 @@ function updateUbigeoDisplay() {
     if (ubigeoData && ubigeoData[currentUbigeoValue]) {
       const data = ubigeoData[currentUbigeoValue];
       // Se muestran los datos en el orden: Distrito, Provincia, Departamento
-      ubigeoDisplayText = `${data.distrito}, ${data.provincia}, ${data.departamento}`;
+      ubigeoDisplayText = `Distrito: ${data.distrito}, Provincia: ${data.provincia}, Departamento: ${data.departamento}`;
     } else {
       ubigeoDisplayText = "";
     }
@@ -81,17 +81,21 @@ function updateInstallmentSection() {
   }
 }
 
-// Función para obtener la descripción de un SVA dado su key
-function getSVADescription(optionKey) {
+// Función para obtener la etiqueta y la descripción de un SVA dado su key
+function getSVALabelAndDescription(optionKey) {
   for (let category in svaConstants) {
     if (svaConstants[category][optionKey]) {
-      return svaConstants[category][optionKey].description;
+      return {
+        label: svaConstants[category][optionKey].label,
+        description: svaConstants[category][optionKey].description,
+      };
     }
   }
-  return "";
+  return { label: "", description: "" };
 }
 
 function updateContract() {
+  moment.locale("es");
   const currentDate = moment();
   const location = document.getElementById("location").value;
   const fiberSpeed = parseInt(document.getElementById("fiberSpeed").value);
@@ -158,7 +162,7 @@ function updateContract() {
   } else {
     datosText = `<p>
       Su nombre completo es<br>
-      Su número de Documento de Identidad / CE / RUC (10…)<br>
+      Su número de documento de identidad / CE / RUC (10…)<br>
       <div style="display: flex; align-items: center; margin: 4px 0;">
         <span style="margin-right: 8px;">Lugar y Fecha de Nacimiento</span>
         <input type="text" id="ubigeoInput" placeholder="Ubigeo" oninput="updateUbigeoDisplay()" style="width: 120px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" value="${currentUbigeoValue}">
@@ -215,7 +219,7 @@ function updateContract() {
         <div class="mt-3">
           <h3 class="font-bold text-base">FIJO</h3>
           <p class="text-gray-900">
-            El servicio de telefonía fija VoIP postpago se brinda a través de la red de internet de WIN. Incluye un equipo de telefonía analógico en comodato, llamadas ilimitadas dentro de la red de WIN y un paquete mensual de 100 minutos para llamar a todo operador a nivel nacional, no acumulable. El precio mensual del servicio es de <strong class="bold-keyword">S/ 10.00</strong>, incluye I.G.V.
+            El servicio de telefonía fija VoIP postpago se brinda a través de la red de internet de WIN. Tu servicio incluye un equipo de telefonía analógico en comodato, llamadas ilimitadas dentro de la red de WIN y un paquete mensual de 100 minutos para llamar a todo operador a nivel nacional, no acumulable. El precio mensual del servicio es de <strong class="bold-keyword">S/ 10.00</strong>, incluye I.G.V.
           </p>
           <div class="mt-1 text-gray-500 text-xs">
             <p>(En caso de portabilidad de otro operador)</p>
@@ -307,15 +311,18 @@ function updateContract() {
       ${
         additionalSVA.length > 0
           ? `
-      <div class="contract-section">
-        <div class="mt-3 border-t pt-3">
-          <h4 class="text-base font-semibold">Servicios Adicionales:</h4>
-          ${additionalSVA
-            .map((sva) => `<p class="mt-1">${getSVADescription(sva)}</p>`)
-            .join("")}
+        <div class="contract-section">
+          <div class="mt-3 border-t pt-3">
+            <h4 class="text-base font-semibold">Servicios Adicionales:</h4>
+            ${additionalSVA
+              .map((sva) => {
+                const { label, description } = getSVALabelAndDescription(sva);
+                return `<h3 class="text-lg font-bold mt-2">${label}</h3><p class="mt-1">${description}</p>`;
+              })
+              .join("")}
+          </div>
         </div>
-      </div>
-      `
+        `
           : ""
       }
       

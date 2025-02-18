@@ -1,115 +1,135 @@
 /***************************************
  * CONSTANTES DE SVA
  ***************************************/
+moment.locale("es");
+const currentDate = moment();
+const salto_linea = `<hr><hr><hr><hr><hr><hr></hr><hr><hr><hr><hr><hr><hr></hr><hr><hr><hr><hr><hr><hr></hr>`;
+
 const svaConstants = {
   fono: {
     fono_10: {
-      label: "Fono S/10",
+      label: "FONO",
       description: "Servicio fono a S/10"
     },
     fono_prov_hb: {
-      label: "Fono S/1 (Provincia Plan HB 1000)",
+      label: "FONO S/1 (Provincia Plan HB 1000)",
       description: "Servicio fono para provincia con PLAN HB 1000"
     }
   },
   mesh: {
     mesh_400: {
-      label: "1 Mesh Plan de 400",
-      description: "1 Mesh plan de 400"
+      label: "1 MESH Plan de 400",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Un (01) equipo no terminal Mesh en comodato.</strong><br> <br> La instalación alámbrica tiene un costo adicional de <strong class="bold-keyword">S/ 55.00</strong> incluido IGV por equipo. ¿Deseas la instalación alámbrica? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_600: {
-      label: "2 Mesh Plan de 600",
-      description: "2 mesh plan de 600"
+      label: "2 MESH Plan de 600",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">DOS (02) equipos no terminal Mesh en comodato.</strong><br> <br> La instalación alámbrica tiene un costo adicional de <strong class="bold-keyword">S/ 55.00</strong> incluido IGV por equipo. ¿Deseas la instalación alámbrica? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_1000: {
-      label: "2 Mesh Plan de 1000",
-      description: "2 mesh plan de 1000"
+      label: "2 MESH Plan de 1000",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">DOS (02) equipos no terminal Mesh en comodato.</strong><br> <br> La instalación alámbrica tiene un costo adicional de <strong class="bold-keyword">S/ 55.00</strong> incluido IGV por equipo. <strong class="bold-keyword">Por promoción, tendrá un precio de S/ 0.00 (cero soles).</strong> <br><br> ¿Deseas la instalación alámbrica? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_comodato_1: {
-      label: "1 Mesh en Comodato (HB LIMA)",
-      description: "1 mesh en comodato (HB LIMA)"
+      label: "1 MESH en Comodato (HB LIMA)",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Un (01) equipo no terminal Mesh en comodato.</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_comodato_2: {
-      label: "2 Mesh en Comodato (HB LIMA)",
-      description: "2 mesh en comodato (HB LIMA)"
+      label: "2 MESH en Comodato (HB LIMA)",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Un (02) equipos no terminal Mesh en comodato.</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_alquiler_15: {
-      label: "1 Mesh Alquiler S/15",
-      description: "1 Mesh alquiler s/15"
+      label: "1 MESH Alquiler S/15",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, decides alquilar:<br> <br><strong class="bold-keyword">Un (01) equipo no terminal Mesh.</strong><br> <br> El cargo de alquiler mensual es de <strong class="bold-keyword">S/ 15.00</strong> incluido IGV, el cual será incluido en el recibo de internet fijo. En el primer recibo pagarás un prorrateo desde la fecha de entrega.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe El cese del alquiler se ejecutará a los cinco días de solicitado. En caso se produzca la baja del servicio de internet, el acuerdo quedará sin efecto. La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico para validar su identidad, y suscribir el Acta de Entrega.<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_alquiler_20: {
-      label: "2 Mesh Alquiler S/20",
-      description: "2 Mesh alquiler s/20"
+      label: "2 MESH Alquiler S/20",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, decides alquilar:<br> <br><strong class="bold-keyword">Dos (02) equipos no terminal Mesh.</strong><br> <br> El cargo de alquiler mensual es de <strong class="bold-keyword">S/ 20.00</strong> incluido IGV, el cual será incluido en el recibo de internet fijo. En el primer recibo pagarás un prorrateo desde la fecha de entrega.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe El cese del alquiler se ejecutará a los cinco días de solicitado. En caso se produzca la baja del servicio de internet, el acuerdo quedará sin efecto. La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico para validar su identidad, y suscribir el Acta de Entrega.<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     }
   },
   winbox: {
     winbox_15: {
-      label: "1 Winbox S/15",
-      description: "1 Winbox S/15"
+      label: "1 WINBOX S/15",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, decides alquilar:<br> <br><strong class="bold-keyword">Un (01) equipo WINBOX con sus accesorios.</strong><br> <br> El cargo de alquiler mensual es de <strong class="bold-keyword">S/ 15.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe El cese del alquiler se ejecutará a los cinco días de solicitado. En caso se produzca la baja del servicio de internet, el acuerdo quedará sin efecto. La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico para validar su identidad, y suscribir el Acta de Entrega.<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     winbox_30: {
-      label: "2 Winbox S/30",
-      description: "2 Winbox S/30"
+      label: "2 WINBOX S/30",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, decides alquilar:<br> <br><strong class="bold-keyword">Dos (02) equipos WINBOX con sus accesorios.</strong><br> <br> El cargo de alquiler mensual es de <strong class="bold-keyword">S/ 30.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe El cese del alquiler se ejecutará a los cinco días de solicitado. En caso se produzca la baja del servicio de internet, el acuerdo quedará sin efecto. La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico para validar su identidad, y suscribir el Acta de Entrega.<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     winbox_plan_hb_1: {
-      label: "1 Winbox Plan HB",
-      description: "1 winbox PLAN HB"
+      label: "1 WINBOX Plan HB",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Un (01) equipo WINBOX con sus accesorios, en comodato.</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     winbox_plan_hb_2: {
-      label: "2 Winbox Plan HB",
-      description: "2 Winbox Plan HB"
+      label: "2 WINBOX Plan HB",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Dos (02) equipos WINBOX con sus accesorios, en comodato.</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     }
   },
   wintv: {
     wintv_basico: {
-      label: "Wintv Básico",
-      description: "Wintv básico"
+      label: "WINTV BÁSICO",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el aplicativo WIN TV</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 15.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     wintv_plus: {
-      label: "Wintv Plus",
-      description: "Wintv plus"
+      label: "WINTV PLUS",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el aplicativo WIN TV PLUS</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 25.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     wintv_premium: {
-      label: "Wintv Premium",
-      description: "Wintv premium"
+      label: "WINTV PREMIUM",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br><strong style="font-weight: bold; color: black;">Con dirección en:</strong><br> <br> De esta manera, por medio del presente, el cliente acepta adquirir de manera adicional a su servicio de internet fijo: <br> <br>Una suscripción al servicio <strong class="bold-keyword">WINTV PREMIUM</strong> , el cual le permitirá acceder a diverso contenido audiovisual a través del aplicativo WIN TV, de acuerdo con las características del plan adquirido, siempre que el cliente mantenga activo su servicio de internet fijo contratado con WIN. <br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 49.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones de uso del servicio, así como dispositivos compatibles, ingresa a https://win.pe/wintv<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     wintv_plus_hb: {
-      label: "Wintv Plus (HB)",
+      label: "WINTV PLUS (HB)",
       description: "wintv plus (HB)"
     },
     wintv_plus_provincia: {
-      label: "Wintv Plus Provincia",
+      label: "WINTV PLUS PROVINCIA",
       description: "wintv plus provincia"
     },
     wintv_plus_promo_efe: {
-      label: "Wintv Plus (PROMO EFE)",
+      label: "WINTV PLUS (PROMO EFE)",
       description: "wintv plus (PROMO EFE)"
     },
-    wintv_l1_max: {
-      label: "Wintv L1 Max",
-      description: "wintv l1 max"
+    hb_wintv_l1_max_350: {
+      label: "HB WINTV L1 MAX 350",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el servicio de streaming WINTV L1MAX.</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 10.90</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
+    },
+    hb_wintv_l1_max_550_wg: {
+      label: "WINTV L1MAX PREMIUM 550",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el servicio de streaming WINTV L1MAX PREMIUM.</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 30.90</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
+    },
+    hb_wintv_l1_max_750_wg: {
+      label: "WINTV L1MAX PREMIUM 750",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el servicio de streaming WINTV L1MAX PREMIUM.</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 40.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
+    },
+    hb_wintv_l1_max_1000_wg: {
+      label: "WINTV L1MAX PREMIUM 1000",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el servicio de streaming WINTV L1MAX PREMIUM.</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 50.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
+    },
+    hb_wintv_l1_max_1000_prov: {
+      label: "WINTV L1MAX PREMIUM 1000 PROVINCIA",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el servicio de streaming WINTV L1MAX PREMIUM.</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 20.90</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     wintv_l1_max_premium: {
-      label: "Wintv L1 Max Premium",
+      label: "WINTV L1 MAX PREMIUM",
       description: "wintv l1 max premium"
     },
     wintv_l1_max_premium_promo: {
-      label: "Wintv L1 Max Premium (Promo CROSS)",
-      description: "wintv l1 max premium (Promo CROSS)"
+      label: "WIN TV L1 MAX PREMIUM (PROMO CROSS)",
+      description: "Wintv l1 max premium (Promo CROSS)"
     },
     wintv_plus_playas: {
-      label: "Win TV Plus (PROMO PLAYAS)",
+      label: "WINTV PLUS (PROMO PLAYAS)",
       description: "WIN TV PLUS (PROMO PLAYAS)"
     }
   },
   winGames: {
     win_games_hb: {
-      label: "Win Games (HB LIMA)",
-      description: "WIN GAMES (HB LIMA)"
+      label: "WINGAMES (HB LIMA)",
+      description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Una suscripción para el aplicativo WIN GAMES</strong> <br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/  0.90 </strong> incluido IGV. <br><br> Para mayor información de términos y condiciones ingresa a win.pe/TYC <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     win_games: {
-      label: "Win Games",
-      description: "WIN GAMES"
+      label: "WINGAMES",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el aplicativo WIN GAMES</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 39.00</strong> incluido IGV.<br> <br> Por promoción, tendrá un precio de <strong class="bold-keyword">S/ 29.00 (veintinueve soles) incluido IGV, por los tres (03) primeros meses</strong>; a partir del cuarto mes, pagarás el precio regular.<br><br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     }
   },
   dgo: {

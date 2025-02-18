@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css" />
     <!-- Tailwind y Moment desde CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
   </head>
   <body>
     <!-- SIDEBAR IZQUIERDO: OPCIONES DE CONTRATO -->
@@ -51,8 +51,9 @@
                   type="checkbox"
                   name="serviceType"
                   value="fibra"
-                  class="form-checkbox h-4 w-4"
+                  class="form-checkbox h-4 w-4 opacity-50 cursor-not-allowed"
                   checked
+                  onclick="return false;"
                 />
                 <span class="ml-1">Fibra</span>
               </label>
@@ -120,7 +121,7 @@
           <button
             type="button"
             data-fiber="350"
-            data-sva='["wintv_l1_max","winbox_plan_hb_1"]'
+            data-sva='["winbox_plan_hb_1","hb_wintv_l1_max_350"]'
             class="offer-button w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
           >
             Plan de 350 + Wintv L1 Max + Winbox en comodato
@@ -180,7 +181,7 @@
       </div>
     </div>
 
-    <!-- Scripts: constantes y lógica -->
+    <!-- Scripts: primero las constantes y luego la lógica -->
     <script src="constants.js"></script>
     <script src="script.js"></script>
   </body>
