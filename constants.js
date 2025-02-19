@@ -18,11 +18,11 @@ const svaConstants = {
   },
   mesh: {
     mesh_400: {
-      label: "1 MESH Plan de 400/350 GAMER",
+      label: "1 MESH PLAN 400/350 GAMER",
       description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">Un (01) equipo no terminal Mesh en comodato.</strong><br> <br> La instalación alámbrica tiene un costo adicional de <strong class="bold-keyword">S/ 55.00</strong> incluido IGV por equipo. ¿Deseas la instalación alámbrica? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_600: {
-      label: "2 MESH Plan de 600",
+      label: "2 MESH PLAN 600",
       description: `<br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a:<br> <br><strong class="bold-keyword">DOS (02) equipos no terminal Mesh en comodato.</strong><br> <br> La instalación alámbrica tiene un costo adicional de <strong class="bold-keyword">S/ 55.00</strong> incluido IGV por equipo. ¿Deseas la instalación alámbrica? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong><br> <br> La entrega se realizará en el domicilio del servicio de internet, el titular deberá exhibir el DNI/CE en físico, para validar su identidad, y suscribir el Acta de Entrega. Para mayor información de términos y condiciones ingresa a win.pe <br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
     },
     mesh_1000: {
