@@ -46,6 +46,7 @@ function getSelectSpeedText(speed) {
   if (speed === 360) return "350 Mbps Gamer";
   if (speed === 610) return "600 Mbps Gamer";
   if (speed === 1010) return "1000 Mbps Gamer";
+  if (speed === 800) return "800 Mbps VERISURE";
   return speed + " Mbps";
 }
 
@@ -55,7 +56,7 @@ function updateFiberSpeeds() {
   const selectedLocation = locationSelect.value;
   let speeds = [];
   if (selectedLocation === "lima") {
-    speeds = [200, 300, 350, 360, 400, 550, 600, 610, 750, 850, 1000, 1010];
+    speeds = [200, 300, 350, 360, 400, 550, 600, 610, 750, 800, 850, 1000, 1010];
   } else {
     speeds = [350, 360, 550, 610, 850, 1000, 1010];
   }
