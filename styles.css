@@ -42,7 +42,7 @@ body {
   z-index: 50;
 }
 .sidebar:hover {
-  width: 240px;
+  width: 300px;
 }
 .sidebar-collapsed-text {
   position: absolute;
