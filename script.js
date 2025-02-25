@@ -176,19 +176,20 @@ function updateContract() {
   }
 
   let pricingText = "";
-  if (documentType === "ruc") {
-    pricingText = `El precio mensual es de <strong class="bold-keyword">S/ ${plan.pb}</strong> incluye I.G.V.`;
-  } else {
-    if (!plan.vbp && !plan.pp) {
-      pricingText = `El precio mensual es de <strong class="bold-keyword">S/ ${plan.pb}</strong> incluye I.G.V.`;
-    } else if (plan.vbp && !plan.pp) {
-      pricingText = `El precio mensual es de <strong class="bold-keyword">S/ ${plan.pb}</strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword">06 meses</strong>, incrementamos tu velocidad a <strong class="bold-keyword">${plan.vbp} Mbps</strong>, con un mínimo garantizado de <strong class="bold-keyword">${plan.vmp} Mbps</strong> de carga y descarga; vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
-    } else if (plan.vbp && plan.pp) {
-      pricingText = `El precio mensual es de <strong class="bold-keyword">S/ ${plan.pb}</strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword">06 meses</strong>, incrementamos tu velocidad a <strong class="bold-keyword">${plan.vbp} Mbps</strong>, con un mínimo garantizado de <strong class="bold-keyword">${plan.vmp} Mbps</strong> de carga y descarga, pagarás a un precio promocional de <strong class="bold-keyword">S/ ${plan.pp}</strong> incluye I.G.V (por los primeros <strong class="bold-keyword">03 meses</strong>); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
-    } else if (!plan.vbp && plan.pp) {
-      pricingText = `El precio mensual es de <strong class="bold-keyword">S/ ${plan.pb}</strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword">03 meses</strong>, pagarás a un precio promocional de <strong class="bold-keyword">S/ ${plan.pp}</strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
-    }
+if (documentType === "ruc") {
+  pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
+} else {
+  if (!plan.vbp && !plan.pp) {
+    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
+  } else if (plan.vbp && !plan.pp) {
+    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga; vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+  } else if (plan.vbp && plan.pp) {
+    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> incluye I.G.V (por los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+  } else if (!plan.vbp && plan.pp) {
+    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
   }
+}
+
     
   let installationText = "";
   if (documentType === "ruc") {
