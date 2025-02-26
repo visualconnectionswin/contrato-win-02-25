@@ -2030,19 +2030,41 @@ const ubigeoCSV = `Ubigeo,Distrito,Provincia,Departamento
 250401,Purus,Purus,Ucayali`;
 
 function parseUbigeoCSV(csv) {
-  const lines = csv.split("\n").map(line => line.trim()).filter(line => line);
-  const result = {};
-  const header = lines[0].split(",");
+  const lines = csv.split("\n")
+                   .map(line => line.trim())
+                   .filter(line => line);
+  const tree = {};
+  // Se omite la primera línea (cabecera)
   for (let i = 1; i < lines.length; i++) {
     const cols = lines[i].split(",");
     const code = cols[0];
-    result[code] = {
-      distrito: cols[1],
-      provincia: cols[2],
-      departamento: cols[3]
-    };
+    const distrito = cols[1];
+    const provincia = cols[2];
+    const departamento = cols[3];
+
+    // Se extraen los códigos correspondientes
+    const deptCode = code.substr(0, 2);
+    const provCode = code.substr(2, 2);
+    const distCode = code.substr(4, 2);
+
+    // Si no existe el departamento, se crea
+    if (!tree[deptCode]) {
+      tree[deptCode] = {
+        departamento: departamento,
+        provincias: {}
+      };
+    }
+    // Si no existe la provincia dentro del departamento, se crea
+    if (!tree[deptCode].provincias[provCode]) {
+      tree[deptCode].provincias[provCode] = {
+        provincia: provincia,
+        distritos: {}
+      };
+    }
+    // Se asigna el distrito
+    tree[deptCode].provincias[provCode].distritos[distCode] = distrito;
   }
-  return result;
+  return tree;
 }
 
 const ubigeoData = parseUbigeoCSV(ubigeoCSV);
