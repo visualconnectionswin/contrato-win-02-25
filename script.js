@@ -17,19 +17,38 @@ let ubigeoDisplayText = ""; // Valor por defecto para mostrar
 function updateUbigeoDisplay() {
   const ubigeoInput = document.getElementById("ubigeoInput");
   if (ubigeoInput) {
-    currentUbigeoValue = ubigeoInput.value.trim();
-    if (ubigeoData && ubigeoData[currentUbigeoValue]) {
-      const data = ubigeoData[currentUbigeoValue];
-      // Se muestran los datos en el orden: Distrito, Provincia, Departamento
-      ubigeoDisplayText = `Distrito: ${data.distrito}, Provincia: ${data.provincia}, Departamento: ${data.departamento}`;
-    } else {
-      ubigeoDisplayText = "";
+    const currentUbigeoValue = ubigeoInput.value.trim();
+    const parts = [];
+
+    // Si se ingresan al menos 2 dígitos, mostramos el departamento
+    if (currentUbigeoValue.length >= 2) {
+      const deptCode = currentUbigeoValue.substr(0, 2);
+      const deptData = ubigeoData[deptCode];
+      if (deptData) {
+        parts.push(`Departamento: ${deptData.departamento}`);
+        // Con 4 dígitos, agregamos la provincia
+        if (currentUbigeoValue.length >= 4) {
+          const provCode = currentUbigeoValue.substr(2, 2);
+          const provData = deptData.provincias[provCode];
+          if (provData) {
+            parts.push(`Provincia: ${provData.provincia}`);
+            // Con 6 dígitos, mostramos también el distrito
+            if (currentUbigeoValue.length >= 6) {
+              const distCode = currentUbigeoValue.substr(4, 2);
+              const distName = provData.distritos[distCode];
+              if (distName) {
+                parts.push(`Distrito: ${distName}`);
+              }
+            }
+          }
+        }
+      }
     }
     const ubigeoDisplay = document.getElementById("ubigeoDisplay");
     if (ubigeoDisplay) {
-      ubigeoDisplay.innerText = ubigeoDisplayText;
+      ubigeoDisplay.innerText = parts.join(", ");
     }
-    // Si deseas que al cambiar el ubigeo se actualice el contrato, puedes descomentar la siguiente línea:
+    // Si deseas actualizar otros elementos al cambiar el ubigeo, descomenta la siguiente línea:
     // updateContract();
   }
 }
