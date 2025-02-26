@@ -10,7 +10,7 @@ let selectedSvaOptions = {
   dgo: []
 };
 
-let currentUbigeoValue = ""; // Valor inicial o el valor que corresponda
+let currentUbigeoValue = ubigeoInput.value.replace(/\D/g, '').substr(0, 6);
 let ubigeoDisplayText = ""; // Valor por defecto para mostrar
 
 // Función que actualiza el display del ubigeo a partir del valor ingresado
