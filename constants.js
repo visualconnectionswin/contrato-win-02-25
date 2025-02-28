@@ -137,6 +137,10 @@ const svaConstants = {
     }
   },
   dgo: {
+    dgo_basico: {
+      label: "DGO BÁSICO",
+      description: `<br> Hoy ${currentDate.format("DD")} de ${currentDate.format("MMMM")} del ${currentDate.format("YYYY")}, en la ciudad de LIMA, usted contrata con WIN, para ello me brinda los siguientes datos:<br><br> <strong style="font-weight: bold; color: black;">Su nombre completo es</strong> <br> <strong style="font-weight: bold; color: black;">Su número de Documento de Identidad / CE / RUC (10…)</strong><br> <br> De manera adicional e independiente al servicio de internet fijo, mientras mantengas vigente el servicio, accedes a: <br> <br><strong class="bold-keyword">Una suscripción para el aplicativo DGO en su paquete básico</strong><br> <br> El precio mensual de la suscripción es de <strong class="bold-keyword">S/ 54.00</strong> incluido IGV.<br> <br> Para mayor información de términos y condiciones ingresa a win.pe<br> <br> ¿Aceptas los términos del presente acuerdo? <strong class="bold-keyword">(CLIENTE RESPONDE)</strong>.<br> <br> ${salto_linea}`
+    },
     dgo_l1_max_hb: {
       label: "DGO L1 MAX (PLANES HB)",
       description: "DGO L1 MAX (PLANES HB)"
