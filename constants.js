@@ -179,7 +179,9 @@ const config = {
   pricing: {
     lima: {
       200: { vb: 200, vm: 140, pb: 99,  vbp: 400, vmp: 280 },
+      210: { vb: 200, vm: 140, pb: 99, vbp: 400, vmp: 280, pp: 59 },
       300: { vb: 300, vm: 210, pb: 119, vbp: 600, vmp: 420, pp: 89 },
+      310: { vb: 300, vm: 210, pb: 119, vbp: 600, vmp: 420, pp: 79 },
       350: { vb: 350, vm: 245, pb: 129 },
       360: { vb: 350, vm: 245, pb: 129, pp: 99 },
       400: { vb: 400, vm: 280, pb: 129, vbp: 800, vmp: 560, pp: 99 },
