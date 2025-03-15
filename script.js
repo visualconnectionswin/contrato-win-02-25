@@ -199,19 +199,19 @@ function updateContract() {
   }
 
   let pricingText = "";
-if (documentType === "ruc") {
-  pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
-} else {
-  if (!plan.vbp && !plan.pp) {
+  if (documentType === "ruc") {
     pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
-  } else if (plan.vbp && !plan.pp) {
-    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga; vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
-  } else if (plan.vbp && plan.pp) {
-    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> incluye I.G.V (por los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
-  } else if (!plan.vbp && plan.pp) {
-    pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V. Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+  } else {
+    if (!plan.vbp && !plan.pp) {
+      pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
+    } else if (plan.vbp && !plan.pp) {
+      pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.${(fiberSpeed === 210 || fiberSpeed === 310 ? ' y el precio de instalación es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV.' : '')} <br><br>Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga; vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+    } else if (plan.vbp && plan.pp) {
+      pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.${(fiberSpeed === 210 || fiberSpeed === 310 ? ' y el precio de instalación es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV.' : '')} <br><br>Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> incluye I.G.V (por los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+    } else if (!plan.vbp && plan.pp) {
+      pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.${(fiberSpeed === 210 || fiberSpeed === 310 ? ' y el precio de instalación es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV.' : '')} <br><br>Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+    }
   }
-}
 
     
   let installationText = "";
@@ -330,6 +330,9 @@ if (documentType === "ruc") {
         <p>
           ¿Aceptas el envío de comunicaciones comerciales, publicitarias y encuestas? <strong class="bold-keyword">CLIENTE RESPONDE SI/NO</strong>.
         </p>
+        ${(fiberSpeed === 210 || fiberSpeed === 310) ? `<p>
+          <br>Te recordamos que el precio de instalación de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV deberá ser pagado de forma adelantada y como requisito para la instalación del servicio. ¿Aceptas el pago adelantado? <strong class="bold-keyword">CLIENTE RESPONDE SI</strong>.
+        </p>` : ""}
       </div>
       
       <!-- Sección de Servicios Adicionales (para SVA distintos a fono) -->
