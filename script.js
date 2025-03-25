@@ -106,13 +106,23 @@ function updateInstallmentSection() {
 }
 
 // Función para obtener la etiqueta y la descripción de un SVA dado su key
-function getSVALabelAndDescription(optionKey) {
+function getSVALabelAndDescription(optionKey, documentType) {
   for (let category in svaConstants) {
     if (svaConstants[category][optionKey]) {
-      return {
-        label: svaConstants[category][optionKey].label,
-        description: svaConstants[category][optionKey].description,
-      };
+      let description = svaConstants[category][optionKey].description;
+      let label = svaConstants[category][optionKey].label;
+
+      if (documentType === 'ruc') {
+        description = description.replace(
+          /<strong style="font-weight: bold; color: black;">Su nombre completo es<\/strong> <br>/g,
+          '<strong style="font-weight: bold; color: black;">Nombre de la empresa (Razón social)</strong> <br>'
+        );
+        description = description.replace(
+          /<strong style="font-weight: bold; color: black;">Su número de Documento de Identidad \/ CE \/ RUC \(10…\)<\/strong><br>/g,
+          '<strong style="font-weight: bold; color: black;">Número de RUC (20…)</strong><br>'
+        );
+      }
+      return { label: label, description: description };
     }
   }
   return { label: "", description: "" };
@@ -344,7 +354,7 @@ function updateContract() {
             <h4 class="text-base font-semibold">Servicios Adicionales:</h4>
             ${additionalSVA
               .map((sva) => {
-                const { label, description } = getSVALabelAndDescription(sva);
+                const { label, description } = getSVALabelAndDescription(sva, documentType);
                 return `<h3 class="text-lg font-bold mt-2">${label}</h3><p class="mt-1">${description}</p>`;
               })
               .join("")}
