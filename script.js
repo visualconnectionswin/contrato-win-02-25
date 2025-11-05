@@ -79,7 +79,7 @@ function updateFiberSpeeds() {
   const selectedLocation = locationSelect.value;
   let speeds = [];
   if (selectedLocation === "lima") {
-    speeds = [200, 210, 300, 310, 350, 360, 400, 550, 600, 610, 750, 800, 850, 1000, 1010];
+    speeds = [200, 210, 300, 310, 350, 360, 400, 500, 550, 600, 610, 750, 800, 850, 1000, 1010];
   } else {
     speeds = [350, 360, 550, 610, 850, 1000, 1010];
   }
@@ -219,7 +219,7 @@ function updateContract() {
     } else if (plan.vbp && plan.pp) {
       pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.${(fiberSpeed === 210 || fiberSpeed === 310 ? ' y el precio de instalación es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV.' : '')} <br><br>Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">06 meses</span></strong>, incrementamos tu velocidad a <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vbp} Mbps</span></strong>, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vmp} Mbps</span></strong> de carga y descarga, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> incluye I.G.V (por los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
     } else if (!plan.vbp && plan.pp) {
-      pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.${(fiberSpeed === 210 || fiberSpeed === 310 ? ' y el precio de instalación es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV.' : '')} <br><br>Por promoción, los primeros <strong class="bold-keyword"><span style="font-size:1.2em;">03 meses</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
+      pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.${(fiberSpeed === 210 || fiberSpeed === 310 ? ' y el precio de instalación es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 120.00</span></strong> incluido IGV.' : '')} <br><br>Por promoción, el primer <strong class="bold-keyword"><span style="font-size:1.2em;">01 mes</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pp}</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
     }
   }
 
@@ -245,7 +245,7 @@ function updateContract() {
   // se inserta el bloque de FONO inmediatamente después.
   let reconnectionSection = `
     <div class="contract-section">
-      <p>La tarifa de reconexión es de <strong class="bold-keyword">S/ 10.00</strong>, incluye I.G.V.</p>
+      <p>La tarifa de reconexión es de <strong class="bold-keyword">S/ 6.01</strong>, incluye I.G.V.</p>
   `;
   if (selectedServices.includes("sva") && selectedSvaOptions.fono.length > 0) {
     const option = selectedSvaOptions.fono[0];
@@ -322,7 +322,7 @@ function updateContract() {
       <!-- Sección de Facturación y demás datos -->
       <div class="contract-section">
         <p>
-          La fecha de facturación es el <strong class="bold-keyword">12</strong> de cada mes, y la fecha de vencimiento es el <strong class="bold-keyword">28</strong> del mismo mes.
+          La fecha de facturación es el <strong class="bold-keyword">14</strong> de cada mes, y la fecha de vencimiento es el <strong class="bold-keyword">28</strong> del mismo mes.
         </p>
         <br>
         <p>
