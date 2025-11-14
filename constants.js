@@ -2051,7 +2051,6 @@ const ubigeoCSV = `Ubigeo,Distrito,Provincia,Departamento
 250303,Yurua,Atalaya,Ucayali
 250304,Sepahua,Atalaya,Ucayali
 250401,Purus,Purus,Ucayali`;
-
 function parseUbigeoCSV(csv) {
   const lines = csv.split("\n")
                    .map(line => line.trim())
