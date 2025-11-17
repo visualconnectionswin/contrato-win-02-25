@@ -136,7 +136,7 @@ function getSVALabelAndDescription(optionKey, documentType) {
 }
 
 // Función para generar el SPEECH con los precios y servicios correctos
-function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions) {
+function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, installmentOption) {
   // Obtener el nombre del plan
   const planName = getDisplaySpeed(fiberSpeed);
   
@@ -150,17 +150,19 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions) {
   let mesesDescuentoFibra = 1;
   let textoDuracionDescuento = "el primer mes";
   
-  // Determinar si hay descuento en fibra y cuántos meses
-  if (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50") {
-    tieneDctoFibra = true;
-    precioFibraDescuento = plan.pb_promo || 0;
-    mesesDescuentoFibra = 1;
-    textoDuracionDescuento = "el primer mes";
-  } else if (plan.tipo === "promo_condominio") {
-    tieneDctoFibra = true;
-    precioFibraDescuento = 1;
-    mesesDescuentoFibra = 2;
-    textoDuracionDescuento = "los primeros 2 meses";
+  // Determinar si hay descuento en fibra y cuántos meses (SOLO PARA DNI/CE/RUC 10)
+  if (documentType !== "ruc") {
+    if (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50") {
+      tieneDctoFibra = true;
+      precioFibraDescuento = plan.pb_promo || 0;
+      mesesDescuentoFibra = 1;
+      textoDuracionDescuento = "el primer mes";
+    } else if (plan.tipo === "promo_condominio") {
+      tieneDctoFibra = true;
+      precioFibraDescuento = 1;
+      mesesDescuentoFibra = 2;
+      textoDuracionDescuento = "los primeros 2 meses";
+    }
   }
   
   // Array para almacenar servicios
@@ -183,8 +185,8 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions) {
     if (matchPrecio) {
       precioTvBase = parseFloat(matchPrecio[1]);
       
-      // Aplicar descuento del 50% solo si NO es promo_condominio
-      if ((plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
+      // Aplicar descuento del 50% solo si NO es promo_condominio Y NO es RUC 20
+      if (documentType !== "ruc" && (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
         tieneDctoTv = true;
         precioTvDescuento = precioTvBase * 0.5;
       } else {
@@ -307,11 +309,26 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions) {
     speechText += `, y los equipos <strong class="bold-keyword">${equipos.join(" y ")}</strong>`;
   }
   
-  // Agregar información de precios
-  if (tieneDctoFibra || tieneDctoTv || tieneDctoFono) {
-    speechText += `, por un precio promocional de <strong class="bold-keyword">S/ ${precioDescuentoTotal.toFixed(2)}</strong> durante ${textoDuracionDescuento}. Luego de este periodo, pagarás el precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
+  // Agregar información de precios mensuales
+  if (documentType === "ruc") {
+    // Para RUC 20, solo precio regular sin promociones
+    speechText += `. El precio mensual es de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
   } else {
-    speechText += `, por un precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
+    // Para DNI/CE/RUC 10
+    if (tieneDctoFibra || tieneDctoTv || tieneDctoFono) {
+      speechText += `, por un precio promocional de <strong class="bold-keyword">S/ ${precioDescuentoTotal.toFixed(2)}</strong> durante ${textoDuracionDescuento}. Luego de este periodo, pagarás el precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
+    } else {
+      speechText += `, por un precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
+    }
+  }
+  
+  // Agregar información de instalación para RUC 20
+  if (documentType === "ruc") {
+    if (installmentOption === "1") {
+      speechText += ` y el precio de instalación es de <strong class="bold-keyword">S/ 120.00</strong> incluido IGV, con un precio promocional de <strong class="bold-keyword">S/ 60.00</strong>`;
+    } else if (installmentOption === "3") {
+      speechText += ` y el precio de instalación es de <strong class="bold-keyword">S/ 120.00</strong> incluido IGV, el cual puedes fraccionar en tres (03) cuotas sin intereses`;
+    }
   }
   
   speechText += `.<br><br>`;
@@ -481,9 +498,9 @@ function updateContract() {
     svaOrderedSections += `<div class="contract-section"><div class="mt-3 border-t pt-3">`;
     tvSVA.forEach((sva) => {
       const { label, description } = getSVALabelAndDescription(sva, documentType);
-      // Aplicar descuento del 50% en primer mes de TV SOLO si NO es promo_condominio
+      // Aplicar descuento del 50% en primer mes de TV SOLO si NO es promo_condominio Y NO es RUC 20
       let finalDescription = description;
-      if ((plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
+      if (documentType !== "ruc" && (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
         finalDescription = description.replace(
           /El precio mensual de la suscripción es de <strong class="bold-keyword">S\/ ([0-9.]+)<\/strong> incluido IGV\./g,
           (match, price) => {
@@ -492,7 +509,7 @@ function updateContract() {
           }
         );
       }
-      // Si es promo_condominio, NO aplicar descuento (usar descripción original)
+      // Si es promo_condominio o RUC 20, NO aplicar descuento (usar descripción original)
       svaOrderedSections += `<h3 class="text-lg font-bold mt-2">${label}</h3><p class="mt-1">${finalDescription}</p>`;
     });
     svaOrderedSections += `</div></div>`;
@@ -523,7 +540,7 @@ function updateContract() {
       <!-- Sección SPEECH -->
       <div class="contract-section speech-section">
         <p class="font-bold text-base mb-2">SPEECH:</p>
-        <p>${generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions)}</p>
+        <p>${generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, installmentOption)}</p>
       </div>
       
       <p class="text-sm">
