@@ -265,7 +265,7 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
   }
   
   // Calcular totales
-  let precioMensualTotal = precioFibraBase + precioTvBase + precioFonoBase + precioEquipos;
+  let precioRegularTotal = precioFibraBase + precioTvBase + precioFonoBase + precioEquipos;
   let precioDescuentoTotal = 0;
   
   if (tieneDctoFibra || tieneDctoTv || tieneDctoFono) {
@@ -311,14 +311,14 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
   
   // Agregar información de precios mensuales
   if (documentType === "ruc") {
-    // Para RUC 20, solo precio mensual sin promociones
-    speechText += `, por un precio mensual de <strong class="bold-keyword">S/ ${precioMensualTotal.toFixed(2)}</strong>`;
+    // Para RUC 20, solo precio regular sin promociones
+    speechText += `. El precio mensual es de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
   } else {
     // Para DNI/CE/RUC 10
     if (tieneDctoFibra || tieneDctoTv || tieneDctoFono) {
-      speechText += `, por un precio promocional de <strong class="bold-keyword">S/ ${precioDescuentoTotal.toFixed(2)}</strong> durante ${textoDuracionDescuento}. Luego de este periodo, pagarás el precio mensual de <strong class="bold-keyword">S/ ${precioMensualTotal.toFixed(2)}</strong>`;
+      speechText += `, por un precio promocional de <strong class="bold-keyword">S/ ${precioDescuentoTotal.toFixed(2)}</strong> durante ${textoDuracionDescuento}. Luego de este periodo, pagarás el precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
     } else {
-      speechText += `, por un precio mensual de <strong class="bold-keyword">S/ ${precioMensualTotal.toFixed(2)}</strong>`;
+      speechText += `, por un precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
     }
   }
   
@@ -331,19 +331,18 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     }
   }
   
-  speechText += `.`;
+  speechText += `.<br><br>`;
   
   // Agregar nota sobre TV si aplica
   if (servicioTv) {
-    speechText += `<br><br>`;
     if (servicioTv.includes("WINTV")) {
-      speechText += `También, comentarte que el servicio de televisión digital que brinda WIN incluye únicamente acceso a <strong class="bold-keyword">WINTV</strong>.`;
+      speechText += `También, comentarte que el servicio de televisión digital que brinda WIN incluye únicamente acceso a <strong class="bold-keyword">WINTV</strong>.<br>`;
     } else if (servicioTv.includes("DGO")) {
-      speechText += `También, comentarte que el servicio de televisión digital que brinda WIN incluye únicamente acceso a <strong class="bold-keyword">DGO</strong>.`;
+      speechText += `También, comentarte que el servicio de televisión digital que brinda WIN incluye únicamente acceso a <strong class="bold-keyword">DGO</strong>.<br>`;
     }
   }
   
-  speechText += `<br><br>¿Es correcto?<br><strong class="bold-keyword">(CLIENTE RESPONDE).</strong><br><br>Ahora procederé con la lectura de contrato.`;
+  speechText += `<br>¿Es correcto?<br><strong class="bold-keyword">(CLIENTE RESPONDE).</strong><br><br>Ahora procederé con la lectura de contrato.`;
   
   return speechText;
 }
