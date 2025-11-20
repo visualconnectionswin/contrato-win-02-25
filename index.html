@@ -4,152 +4,147 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WIN Contrato Generator</title>
-    <!-- Enlazamos el CSS personalizado -->
     <link rel="stylesheet" href="styles.css" />
-    <!-- Tailwind y Moment desde CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
   </head>
   <body>
-    <!-- SIDEBAR IZQUIERDO: OPCIONES DE CONTRATO -->
+    <!-- SIDEBAR IZQUIERDO -->
     <div class="sidebar">
-      <!-- Texto vertical cuando está contraído -->
-      <div class="sidebar-collapsed-text">OPCIONES DE CONTRATO</div>
+      <div class="sidebar-collapsed-text">CONFIGURACIÓN</div>
       <div class="sidebar-content">
-        <h1 class="text-lg font-semibold mb-4">Opciones de Contratación</h1>
-        <form id="contractForm" class="space-y-3 text-sm">
-          <!-- Ubicación -->
-          <div>
-            <label for="location">Ubicación</label>
-            <select id="location" class="w-full">
-              <option value="lima" selected>Lima</option>
-              <option value="provincia">Provincia</option>
-            </select>
+        <h1 class="text-base font-bold mb-4">WIN</h1>
+        
+        <!-- Ubicación -->
+        <div class="config-group">
+          <label class="config-label">Ubicación</label>
+          <div class="button-group">
+            <button class="btn-config active" data-location="lima">Lima</button>
+            <button class="btn-config" data-location="provincia">Provincia</button>
           </div>
-          <!-- Tipo de Documento -->
-          <div>
-            <label for="documentType">Tipo de Documento</label>
-            <select id="documentType" class="w-full">
-              <option value="dni" selected>DNI/CE/RUC 10</option>
-              <option value="ruc">RUC 20</option>
-            </select>
+        </div>
+
+        <!-- Tipo de Cliente -->
+        <div class="config-group">
+          <label class="config-label">Tipo Cliente</label>
+          <div class="button-group-vertical">
+            <button class="btn-config active" data-doctype="dni">DNI/CE/RUC 10</button>
+            <button class="btn-config" data-doctype="ruc">RUC 20</button>
           </div>
-          <!-- Plan de Instalación (solo para RUC 20) -->
-          <div id="installmentSection" class="hidden">
-            <label for="installmentOption">Pago de Instalación</label>
-            <select id="installmentOption" class="w-full">
-              <option value="1">1 cuota – S/ 60</option>
-              <option value="3">3 cuotas – S/ 120</option>
-            </select>
+        </div>
+
+        <!-- Instalación RUC -->
+        <div class="config-group hidden" id="installmentSection">
+          <label class="config-label">Instalación</label>
+          <div class="button-group-vertical">
+            <button class="btn-config active" data-installment="1">1 cuota</button>
+            <button class="btn-config" data-installment="3">3 cuotas</button>
           </div>
-          <!-- Velocidad de Fibra -->
-          <div id="fiberSpeedSection">
-            <label for="fiberSpeed">Velocidad de Fibra</label>
-            <select id="fiberSpeed" class="w-full"></select>
-          </div>
-          <!-- Servicios de Valor Agregado (SVA) – Sidebar Mejorado -->
-          <div id="svaSection">
-            <label>Servicios de Valor Agregado (SVA)</label>
-            <div id="svaCategories" class="grid grid-cols-2 gap-2 mt-1">
-              <button type="button" class="sva-category-btn px-2 py-1 bg-gray-200 rounded" data-category="fono">
-                Fono
-              </button>
-              <button type="button" class="sva-category-btn px-2 py-1 bg-gray-200 rounded" data-category="tv">
-                TV
-              </button>
-              <button type="button" class="sva-category-btn px-2 py-1 bg-gray-200 rounded" data-category="mesh">
-                Mesh
-              </button>
-              <button type="button" class="sva-category-btn px-2 py-1 bg-gray-200 rounded" data-category="winbox">
-                Winbox
-              </button>
-            </div>
-            <!-- Aquí se mostrarán las opciones ya seleccionadas de SVA -->
-            <div id="selectedSvaDisplay" class="mt-2 text-sm text-gray-700"></div>
-          </div>
-        </form>
+        </div>
+
+        <!-- Planes de Fibra -->
+        <div class="config-group">
+          <label class="config-label">Planes de Fibra</label>
+          <div id="fiberPlansGrid" class="fiber-grid"></div>
+        </div>
       </div>
     </div>
 
     <!-- SIDEBAR DERECHO: PLANES FRECUENTES -->
     <div class="right-sidebar">
-      <!-- Texto vertical cuando está contraído -->
       <div class="right-sidebar-collapsed-text">PLANES FRECUENTES</div>
       <div class="right-sidebar-content">
-        <h1 class="text-lg font-semibold mb-4">Ofertas más frecuentes</h1>
-        <div id="offerButtons" class="space-y-3 mt-4">
-          <button
-            type="button"
-            data-fiber="500"
-            data-sva='["wintv_plus_promo"]'
-            class="offer-button w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-          >
+        <h1 class="text-base font-bold mb-4">Ofertas Frecuentes</h1>
+        <div class="frequent-plans">
+          <button class="btn-frequent" data-fiber="500" data-sva='["wintv_plus_promo"]'>
             500 Mbps + WINTV PLUS
           </button>
-          <button
-            type="button"
-            data-fiber="750"
-            data-sva='["wintv_plus_promo"]'
-            class="offer-button w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-          >
+          <button class="btn-frequent" data-fiber="750" data-sva='["wintv_plus_promo"]'>
             750 Mbps + WINTV PLUS
           </button>
-          <button
-            type="button"
-            data-fiber="850"
-            data-sva='["wintv_plus_promo"]'
-            class="offer-button w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-          >
+          <button class="btn-frequent" data-fiber="850" data-sva='["wintv_plus_promo"]'>
             850 Mbps + WINTV PLUS
           </button>
-          <button
-            type="button"
-            data-fiber="1000"
-            data-sva='["wintv_plus_promo","mesh_gratis"]'
-            class="offer-button w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-          >
+          <button class="btn-frequent" data-fiber="1000" data-sva='["wintv_plus_promo","mesh_gratis"]'>
             1000 Mbps + WINTV PLUS + MESH
           </button>
         </div>
       </div>
     </div>
 
-    <!-- PANEL DEL CONTRATO -->
-    <div class="contract-panel">
-      <div
-        id="contractOutput"
-        class="bg-white p-6 rounded-lg shadow-sm transition-all duration-500 ease-in-out fade-in"
-      >
-        <h2 class="text-2xl font-bold text-center mb-4">CONTRATO DE WIN</h2>
-        <!-- Bloque de resumen del plan -->
-        <div
-          id="planSummary"
-          class="text-center text-lg font-mono font-bold text-white bg-blue-500 p-2 rounded mb-4"
-        ></div>
-        <div id="contractContent" class="prose text-sm"></div>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+      <!-- BARRA SUPERIOR DE SVA -->
+      <div class="top-sva-bar">
+        <button class="chip-sva" data-service="fono" data-key="">
+          <span class="chip-icon">📞</span>
+          <span class="chip-label">Fonowin</span>
+        </button>
+        <button class="chip-sva" data-service="mesh" data-key="">
+          <span class="chip-icon">📶</span>
+          <span class="chip-label">Mesh</span>
+        </button>
+        <button class="chip-sva" data-service="winbox" data-key="">
+          <span class="chip-icon">📦</span>
+          <span class="chip-label">Winbox</span>
+        </button>
+        <div class="sva-separator"></div>
+        <button class="chip-sva" data-service="tv" data-key="wintv_plus_promo">
+          <span class="chip-icon">📺</span>
+          <span class="chip-label">WINTV Plus</span>
+        </button>
+        <button class="chip-sva" data-service="tv" data-key="wintv_premium">
+          <span class="chip-icon">🎬</span>
+          <span class="chip-label">WINTV Premium</span>
+        </button>
+        <button class="chip-sva" data-service="tv" data-key="wintv_l1_max">
+          <span class="chip-icon">📽️</span>
+          <span class="chip-label">WINTV L1 Max</span>
+        </button>
+        <button class="chip-sva" data-service="tv" data-key="wintv_l1_max_premium">
+          <span class="chip-icon">🎞️</span>
+          <span class="chip-label">WINTV L1 Max Premium</span>
+        </button>
+        <button class="chip-sva" data-service="tv" data-key="dgo_basico">
+          <span class="chip-icon">🎭</span>
+          <span class="chip-label">DGO Básico</span>
+        </button>
+        <button class="chip-sva" data-service="tv" data-key="dgo_full">
+          <span class="chip-icon">🎪</span>
+          <span class="chip-label">DGO Full</span>
+        </button>
       </div>
-    </div>
 
-    <!-- Modal para selección de opciones SVA -->
-    <div
-      id="svaModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
-    >
-      <div class="bg-white p-4 rounded shadow-lg max-w-md w-full">
-        <h2 id="svaModalTitle" class="text-lg font-bold mb-2"></h2>
-        <div id="svaModalOptions" class="space-y-2"></div>
-        <div class="mt-4 flex justify-end gap-2">
-          <button id="svaModalCancel" class="px-3 py-1 bg-gray-300 rounded">
-            Cancelar
-          </button>
-          <button id="svaModalSave" class="px-3 py-1 bg-blue-500 text-white rounded">
-            Guardar
-          </button>
+      <!-- PANEL DEL CONTRATO -->
+      <div class="contract-container">
+        <div id="contractOutput" class="contract-card">
+          <div id="emptyState" class="empty-state">
+            <p class="text-gray-400 text-center">Selecciona un plan de fibra para comenzar</p>
+          </div>
+          <div id="contractWrapper" class="hidden">
+            <h2 class="contract-title">CONTRATO DE WIN</h2>
+            <div id="planSummary" class="plan-summary"></div>
+            <div id="contractContent" class="contract-content"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL PARA OPCIONES SVA -->
+    <div id="svaModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle"></h3>
+          <button class="btn-close-modal" id="btnCloseModal">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-modal-cancel" id="btnCancel">Cancelar</button>
+          <button class="btn-modal-save" id="btnSave">Guardar</button>
         </div>
       </div>
     </div>
 
-    <!-- Scripts: primero las constantes y luego la lógica -->
     <script src="constants.js"></script>
     <script src="script.js"></script>
   </body>
