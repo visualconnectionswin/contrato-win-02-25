@@ -1,36 +1,41 @@
 /***************************************
- * LÓGICA DE CONTRATO Y SVA
+ * ESTADO DE LA APLICACIÓN
  ***************************************/
-let selectedSvaOptions = {
-  fono: [],
-  tv: [],
-  mesh: [],
-  winbox: []
+let state = {
+  location: "lima",
+  documentType: "dni",
+  installment: "1",
+  fiberSpeed: null,
+  sva: {
+    fono: [],
+    tv: [],
+    mesh: [],
+    winbox: []
+  }
 };
 
 let currentUbigeoValue = "";
-let ubigeoDisplayText = ""; // Valor por defecto para mostrar
+let ubigeoDisplayText = "";
 
-// Función que actualiza el display del ubigeo a partir del valor ingresado
+/***************************************
+ * FUNCIONES AUXILIARES
+ ***************************************/
 function updateUbigeoDisplay() {
   const ubigeoInput = document.getElementById("ubigeoInput");
   if (ubigeoInput) {
     const currentUbigeoValue = ubigeoInput.value.trim();
     const parts = [];
 
-    // Si se ingresan al menos 2 dígitos, mostramos el departamento
     if (currentUbigeoValue.length >= 2) {
       const deptCode = currentUbigeoValue.substr(0, 2);
       const deptData = ubigeoData[deptCode];
       if (deptData) {
         parts.push(`Departamento: ${deptData.departamento}`);
-        // Con 4 dígitos, agregamos la provincia
         if (currentUbigeoValue.length >= 4) {
           const provCode = currentUbigeoValue.substr(2, 2);
           const provData = deptData.provincias[provCode];
           if (provData) {
             parts.push(`Provincia: ${provData.provincia}`);
-            // Con 6 dígitos, mostramos también el distrito
             if (currentUbigeoValue.length >= 6) {
               const distCode = currentUbigeoValue.substr(4, 2);
               const distName = provData.distritos[distCode];
@@ -49,11 +54,10 @@ function updateUbigeoDisplay() {
   }
 }
 
-// Función para obtener el texto del selector de velocidad
 function getSelectSpeedText(speed, tipo) {
   if (speed === 600) return "600 Mbps Gamer";
   if (speed === 850.1) return "850 Mbps PROMO CONDOMINIO ESTRENO";
-  if (speed === 1000.1) return tipo === "lima" ? "1000 Mbps PROMO CONDOMINIO ESTRENO" : "1000 Mbps PROMO CONDOMINIO ESTRENO";
+  if (speed === 1000.1) return "1000 Mbps PROMO CONDOMINIO ESTRENO";
   if (speed === 1000.2) return "1000 Mbps Gamer";
   if (speed === 1500) return "1.5 GB";
   if (speed === 2000) return "2.0 GB";
@@ -61,7 +65,6 @@ function getSelectSpeedText(speed, tipo) {
   return speed + " Mbps";
 }
 
-// Función para obtener la velocidad a mostrar en el contrato
 function getDisplaySpeed(speed) {
   if (speed === 850.1) return 850;
   if (speed === 1000.1 || speed === 1000.2) return 1000;
@@ -71,48 +74,6 @@ function getDisplaySpeed(speed) {
   return speed;
 }
 
-function updateFiberSpeeds() {
-  const locationSelect = document.getElementById("location");
-  const documentTypeSelect = document.getElementById("documentType");
-  const fiberSpeedSelect = document.getElementById("fiberSpeed");
-  const selectedLocation = locationSelect.value;
-  const selectedDocType = documentTypeSelect.value;
-  
-  let speeds = [];
-  if (selectedLocation === "lima") {
-    if (selectedDocType === "ruc") {
-      // RUC 20 en Lima: 500, 750, 850, 1000
-      speeds = [500, 750, 850, 1000];
-    } else {
-      // DNI en Lima: todos los planes
-      speeds = [500, 600, 750, 850, 850.1, 1000, 1000.1, 1000.2, 1500, 2000, 2500];
-    }
-  } else {
-    if (selectedDocType === "ruc") {
-      // RUC 20 en Provincia: 550, 750, 1000
-      speeds = [550, 750, 1000];
-    } else {
-      // DNI en Provincia: todos los planes
-      speeds = [550, 750, 1000, 1000.1];
-    }
-  }
-  
-  fiberSpeedSelect.innerHTML = speeds
-    .map(speed => `<option value="${speed}">${getSelectSpeedText(speed, selectedLocation)}</option>`)
-    .join("");
-}
-
-function updateInstallmentSection() {
-  const documentTypeSelect = document.getElementById("documentType");
-  const installmentSection = document.getElementById("installmentSection");
-  if (documentTypeSelect.value === "ruc") {
-    installmentSection.classList.remove("hidden");
-  } else {
-    installmentSection.classList.add("hidden");
-  }
-}
-
-// Función para obtener la etiqueta y la descripción de un SVA dado su key
 function getSVALabelAndDescription(optionKey, documentType) {
   for (let category in svaConstants) {
     if (svaConstants[category][optionKey]) {
@@ -135,22 +96,167 @@ function getSVALabelAndDescription(optionKey, documentType) {
   return { label: "", description: "" };
 }
 
-// Función para generar el SPEECH con los precios y servicios correctos
-function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, installmentOption) {
-  // Obtener el nombre del plan
-  const planName = getDisplaySpeed(fiberSpeed);
+/***************************************
+ * RENDERIZADO
+ ***************************************/
+function renderFiberPlans() {
+  const fiberGrid = document.getElementById("fiberPlansGrid");
+  let speeds = [];
   
-  // Determinar si es plan Gamer
+  if (state.location === "lima") {
+    speeds = state.documentType === "ruc" 
+      ? [500, 750, 850, 1000]
+      : [500, 600, 750, 850, 850.1, 1000, 1000.1, 1000.2, 1500, 2000, 2500];
+  } else {
+    speeds = state.documentType === "ruc"
+      ? [550, 750, 1000]
+      : [550, 750, 1000, 1000.1];
+  }
+  
+  fiberGrid.innerHTML = speeds.map(speed => {
+    const plan = config.pricing[state.location][speed];
+    const isSelected = state.fiberSpeed === speed;
+    let promoHTML = "";
+    
+    if (state.documentType !== "ruc") {
+      if (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50") {
+        promoHTML = `<div class="fiber-promo">S/ ${plan.pb_promo} 1er mes</div>`;
+      } else if (plan.tipo === "promo_condominio") {
+        promoHTML = `<div class="fiber-promo">S/ 1 x 2 meses</div>`;
+      }
+    }
+    
+    return `
+      <div class="fiber-card ${isSelected ? 'selected' : ''}" data-fiber="${speed}">
+        <div class="fiber-name">${getSelectSpeedText(speed, state.location)}</div>
+        <div class="fiber-price">S/ ${plan.pb}</div>
+        ${promoHTML}
+      </div>
+    `;
+  }).join('');
+  
+  fiberGrid.querySelectorAll('.fiber-card').forEach(card => {
+    card.addEventListener('click', function() {
+      state.fiberSpeed = parseFloat(this.getAttribute('data-fiber'));
+      renderFiberPlans();
+      updateContract();
+    });
+  });
+}
+
+function updateSvaChips() {
+  document.querySelectorAll('.chip-sva').forEach(chip => {
+    const service = chip.getAttribute('data-service');
+    const key = chip.getAttribute('data-key');
+    
+    if (service === 'tv' && key) {
+      chip.classList.toggle('active', state.sva.tv.includes(key));
+    } else if (service === 'fono') {
+      chip.classList.toggle('active', state.sva.fono.length > 0);
+    } else if (service === 'mesh') {
+      chip.classList.toggle('active', state.sva.mesh.length > 0);
+    } else if (service === 'winbox') {
+      chip.classList.toggle('active', state.sva.winbox.length > 0);
+    }
+  });
+}
+
+/***************************************
+ * MODAL SVA
+ ***************************************/
+function openSvaModal(service) {
+  const modal = document.getElementById("svaModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalBody = document.getElementById("modalBody");
+  
+  const serviceNames = {
+    fono: "Fonowin",
+    mesh: "Mesh",
+    winbox: "Winbox"
+  };
+  
+  modalTitle.textContent = `Seleccionar ${serviceNames[service]}`;
+  
+  const options = svaConstants[service];
+  const isRadio = service === "fono" || service === "winbox";
+  
+  modalBody.innerHTML = Object.keys(options).map(key => {
+    const option = options[key];
+    const isSelected = state.sva[service].includes(key);
+    const inputType = isRadio ? 'radio' : 'checkbox';
+    const inputName = isRadio ? service : '';
+    
+    return `
+      <div class="option-item ${isSelected ? 'selected' : ''}" data-key="${key}">
+        <input type="${inputType}" ${inputName ? `name="${inputName}"` : ''} value="${key}" ${isSelected ? 'checked' : ''}>
+        <span>${option.label}</span>
+      </div>
+    `;
+  }).join('');
+  
+  modal.classList.remove('hidden');
+  modal.setAttribute('data-service', service);
+  
+  modalBody.querySelectorAll('.option-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const input = this.querySelector('input');
+      input.checked = !input.checked;
+      
+      if (isRadio) {
+        modalBody.querySelectorAll('.option-item').forEach(i => i.classList.remove('selected'));
+        if (input.checked) this.classList.add('selected');
+      } else {
+        this.classList.toggle('selected', input.checked);
+      }
+    });
+  });
+}
+
+function closeSvaModal(save = false) {
+  const modal = document.getElementById("svaModal");
+  const service = modal.getAttribute('data-service');
+  
+  if (save) {
+    const selectedInputs = modal.querySelectorAll('input:checked');
+    state.sva[service] = Array.from(selectedInputs).map(input => input.value);
+    
+    if (service === "mesh") {
+      const groups = svaMutualExclusionRules.mesh || [];
+      const selected = [...state.sva.mesh];
+      selected.forEach(value => {
+        groups.forEach(group => {
+          if (group.includes(value)) {
+            group.forEach(item => {
+              if (item !== value) {
+                const index = state.sva.mesh.indexOf(item);
+                if (index > -1) state.sva.mesh.splice(index, 1);
+              }
+            });
+          }
+        });
+      });
+    }
+    
+    updateSvaChips();
+    updateContract();
+  }
+  
+  modal.classList.add('hidden');
+}
+
+/***************************************
+ * GENERAR SPEECH
+ ***************************************/
+function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, installmentOption) {
+  const planName = getDisplaySpeed(fiberSpeed);
   const isGamer = plan.tipo === "gamer_descuento50" || fiberSpeed === 600 || fiberSpeed === 1000.2;
   
-  // Calcular precios
   let precioFibraBase = plan.pb || 0;
   let precioFibraDescuento = 0;
   let tieneDctoFibra = false;
   let mesesDescuentoFibra = 1;
   let textoDuracionDescuento = "el primer mes";
   
-  // Determinar si hay descuento en fibra y cuántos meses (SOLO PARA DNI/CE/RUC 10)
   if (documentType !== "ruc") {
     if (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50") {
       tieneDctoFibra = true;
@@ -165,10 +271,7 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     }
   }
   
-  // Array para almacenar servicios
   let servicios = [];
-  
-  // Calcular precios de TV
   let precioTvBase = 0;
   let precioTvDescuento = 0;
   let servicioTv = "";
@@ -179,13 +282,11 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     servicioTv = svaConstants.tv[tvKey].label;
     servicios.push(servicioTv);
     
-    // Extraer precio de TV
     const tvDesc = svaConstants.tv[tvKey].description;
     const matchPrecio = tvDesc.match(/El precio mensual de la suscripción es de <strong class="bold-keyword">S\/ ([0-9.]+)<\/strong>/);
     if (matchPrecio) {
       precioTvBase = parseFloat(matchPrecio[1]);
       
-      // Aplicar descuento del 50% solo si NO es promo_condominio Y NO es RUC 20
       if (documentType !== "ruc" && (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
         tieneDctoTv = true;
         precioTvDescuento = precioTvBase * 0.5;
@@ -195,7 +296,6 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     }
   }
   
-  // Calcular precios de Fono
   let precioFonoBase = 0;
   let precioFonoDescuento = 0;
   let servicioFono = "";
@@ -203,14 +303,10 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
   
   if (selectedSvaOptions.fono && selectedSvaOptions.fono.length > 0) {
     const fonoKey = selectedSvaOptions.fono[0];
-    // Simplificar el nombre de Fono
     servicioFono = "Fonowin";
     servicios.push(servicioFono);
-    
-    // Fono siempre cuesta S/10
     precioFonoBase = 10;
     
-    // Verificar si es el fono con promoción
     if (fonoKey === "fono_1_promo") {
       tieneDctoFono = true;
       precioFonoDescuento = 1;
@@ -219,13 +315,11 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     }
   }
   
-  // Calcular precios de equipos (Mesh y Winbox en alquiler)
   let equipos = [];
   let precioEquipos = 0;
   let cantidadMesh = 0;
   let cantidadWinbox = 0;
   
-  // Mesh - contar cantidad total
   if (selectedSvaOptions.mesh && selectedSvaOptions.mesh.length > 0) {
     selectedSvaOptions.mesh.forEach(meshKey => {
       if (meshKey === "mesh_1_15") {
@@ -236,17 +330,14 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
         precioEquipos += 20;
       } else if (meshKey === "mesh_gratis") {
         cantidadMesh += 1;
-        // No suma al precio
       }
     });
   }
   
-  // Agregar mesh al array de equipos de forma resumida
   if (cantidadMesh > 0) {
     equipos.push(cantidadMesh === 1 ? "1 Mesh" : `${cantidadMesh} Mesh`);
   }
   
-  // Winbox - contar cantidad
   if (selectedSvaOptions.winbox && selectedSvaOptions.winbox.length > 0) {
     selectedSvaOptions.winbox.forEach(winboxKey => {
       if (winboxKey === "winbox_1_15") {
@@ -259,43 +350,35 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     });
   }
   
-  // Agregar winbox al array de equipos
   if (cantidadWinbox > 0) {
     equipos.push(cantidadWinbox === 1 ? "1 Winbox" : `${cantidadWinbox} Winbox`);
   }
   
-  // Calcular totales
   let precioRegularTotal = precioFibraBase + precioTvBase + precioFonoBase + precioEquipos;
   let precioDescuentoTotal = 0;
   
   if (tieneDctoFibra || tieneDctoTv || tieneDctoFono) {
     if (plan.tipo === "promo_condominio") {
-      // En promo condominio, el S/1 es solo para fibra+TV, Fono y equipos se suman aparte
       precioDescuentoTotal = 1 + precioFonoDescuento + precioEquipos;
     } else {
-      // En otros descuentos, el descuento aplica a fibra, TV y Fono, los equipos se suman
       precioDescuentoTotal = precioFibraDescuento + precioTvDescuento + precioFonoDescuento + precioEquipos;
     }
   }
   
-  // Construir el texto del SPEECH
   let speechText = `<strong>(Nombre del cliente)</strong>, queremos asegurarnos de que tengas toda la información clara desde el inicio. Antes de la lectura del contrato, voy a confirmarte `;
   
-  // Determinar si dice "plan y servicios" o "plan, servicios y equipos"
   if (equipos.length > 0) {
     speechText += `el plan, servicios y equipos contratados:<br><br>`;
   } else {
     speechText += `el plan y servicios contratados:<br><br>`;
   }
   
-  // Construir descripción del plan
   if (isGamer) {
     speechText += `Es un plan Gamer de <strong class="bold-keyword">${planName} Mbps</strong>`;
   } else {
     speechText += `Es un plan de <strong class="bold-keyword">${planName} Mbps</strong>`;
   }
   
-  // Agregar servicios (TV y/o Fono) si existen
   if (servicios.length > 0) {
     if (servicios.length === 1) {
       speechText += `, con el servicio de <strong class="bold-keyword">${servicios[0]}</strong>`;
@@ -304,17 +387,13 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     }
   }
   
-  // Agregar equipos si existen
   if (equipos.length > 0) {
     speechText += `, y los equipos <strong class="bold-keyword">${equipos.join(" y ")}</strong>`;
   }
   
-  // Agregar información de precios mensuales
   if (documentType === "ruc") {
-    // Para RUC 20, solo precio regular sin promociones
     speechText += `. El precio mensual es de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
   } else {
-    // Para DNI/CE/RUC 10
     if (tieneDctoFibra || tieneDctoTv || tieneDctoFono) {
       speechText += `, por un precio promocional de <strong class="bold-keyword">S/ ${precioDescuentoTotal.toFixed(2)}</strong> durante ${textoDuracionDescuento}. Luego de este periodo, pagarás el precio regular de <strong class="bold-keyword">S/ ${precioRegularTotal.toFixed(2)}</strong>`;
     } else {
@@ -322,7 +401,6 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
     }
   }
   
-  // Agregar información de instalación para RUC 20
   if (documentType === "ruc") {
     if (installmentOption === "1") {
       speechText += ` y el precio de instalación es de <strong class="bold-keyword">S/ 120.00</strong> incluido IGV, con un precio promocional de <strong class="bold-keyword">S/ 60.00</strong>`;
@@ -333,7 +411,6 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
   
   speechText += `.<br><br>`;
   
-  // Agregar nota sobre TV si aplica
   if (servicioTv) {
     if (servicioTv.includes("WINTV")) {
       speechText += `También, comentarte que el servicio de televisión digital que brinda WIN incluye únicamente acceso a <strong class="bold-keyword">WINTV</strong>.<br>`;
@@ -347,59 +424,47 @@ function generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, inst
   return speechText;
 }
 
+/***************************************
+ * GENERAR CONTRATO
+ ***************************************/
 function updateContract() {
+  const emptyState = document.getElementById('emptyState');
+  const contractWrapper = document.getElementById('contractWrapper');
+  
+  if (!state.fiberSpeed) {
+    emptyState.classList.remove('hidden');
+    contractWrapper.classList.add('hidden');
+    return;
+  }
+  
+  emptyState.classList.add('hidden');
+  contractWrapper.classList.remove('hidden');
+  
   moment.locale("es");
   const currentDate = moment();
-  const location = document.getElementById("location").value;
-  const fiberSpeed = parseFloat(document.getElementById("fiberSpeed").value);
-  const documentType = document.getElementById("documentType").value;
-  const installmentOption = document.getElementById("installmentOption")
-    ? document.getElementById("installmentOption").value
-    : null;
-
-  // Obtener datos del plan según la configuración
-  const plan =
-    config.pricing[location] && config.pricing[location][fiberSpeed]
-      ? config.pricing[location][fiberSpeed]
-      : {};
-
-  // Siempre están seleccionados tanto fibra como sva
-  const selectedServices = ["fibra", "sva"];
-
-  let planSummaryText = "";
-  const docLabel = documentType === "ruc" ? "RUC 20" : "DNI/CE/RUC 10";
-  planSummaryText = `${location.toUpperCase()} - ${docLabel} PLAN: ${getSelectSpeedText(fiberSpeed, location)}`;
+  const plan = config.pricing[state.location][state.fiberSpeed];
   
-  if (documentType === "ruc") {
-    let installmentText = "";
-    if (installmentOption === "1") {
-      installmentText = "pago inst. 1 cuota";
-    } else if (installmentOption === "3") {
-      installmentText = "pago inst. 3 cuotas";
-    }
-    if (installmentText) {
-      planSummaryText += " + " + installmentText;
-    }
+  let summaryText = `${state.location.toUpperCase()} - ${state.documentType === "ruc" ? "RUC 20" : "DNI/CE/RUC 10"} - ${getSelectSpeedText(state.fiberSpeed, state.location)}`;
+  
+  if (state.documentType === "ruc") {
+    summaryText += ` - Instalación ${state.installment} ${state.installment === "1" ? "cuota" : "cuotas"}`;
   }
   
-  // Agregar SVA al resumen
-  let svaSummaryParts = [];
-  Object.keys(selectedSvaOptions).forEach((category) => {
-    if (selectedSvaOptions[category] && selectedSvaOptions[category].length > 0) {
-      const labels = selectedSvaOptions[category].map(
-        (key) => svaConstants[category][key].label
-      );
-      svaSummaryParts.push(labels.join(" / "));
+  let svaParts = [];
+  Object.keys(state.sva).forEach(category => {
+    if (state.sva[category].length > 0) {
+      const labels = state.sva[category].map(key => svaConstants[category][key].label);
+      svaParts.push(labels.join(" / "));
     }
   });
-  if (svaSummaryParts.length > 0) {
-    planSummaryText += " + " + svaSummaryParts.join(" + ");
+  if (svaParts.length > 0) {
+    summaryText += " + " + svaParts.join(" + ");
   }
   
-  document.getElementById("planSummary").innerHTML = planSummaryText;
-
+  document.getElementById("planSummary").innerHTML = summaryText;
+  
   let datosText = "";
-  if (documentType === "ruc") {
+  if (state.documentType === "ruc") {
     datosText = `<p>
         Nombre de la empresa (Razón social)<br>
         Datos del representante legal (Nombre completo, DNI)<br>
@@ -422,65 +487,41 @@ function updateContract() {
       Dirección en la que se instalará el servicio
     </p>`;
   }
-
-  // Determinar el precio y promociones
-  let pricingText = "";
   
-  if (documentType === "ruc") {
-    // Para RUC 20, precio base sin promociones
+  let pricingText = "";
+  if (state.documentType === "ruc") {
     pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
   } else {
-    // Para DNI/CE/RUC 10
     if (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50") {
-      // Planes con 50% descuento en el primer mes
       pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.<br><br>Por promoción, el primer <strong class="bold-keyword"><span style="font-size:1.2em;">01 mes</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb_promo}</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
     } else if (plan.tipo === "promo_condominio") {
-      // Planes promoción condominio estreno
       pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.<br><br>Por promoción, los dos primeros <strong class="bold-keyword"><span style="font-size:1.2em;">02 meses</span></strong>, pagarás a un precio promocional de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ 1</span></strong> (incluye I.G.V.); vencidos estos plazos, se aplicarán las condiciones regulares de tu plan contratado.`;
     } else {
-      // Planes normales sin promoción
       pricingText = `El precio mensual es de <strong class="bold-keyword"><span style="font-size:1.2em;">S/ ${plan.pb}</span></strong> incluye I.G.V.`;
     }
   }
   
   let installationText = "";
-  if (documentType === "ruc") {
-    if (installmentOption === "1") {
+  if (state.documentType === "ruc") {
+    if (state.installment === "1") {
       installationText = `<p>El precio de instalación es de <strong class="bold-keyword">S/ 120.00</strong> incluido IGV, con un precio promocional de <strong class="bold-keyword">S/ 60.00</strong>.</p>`;
-    } else if (installmentOption === "3") {
+    } else if (state.installment === "3") {
       installationText = `<p>El precio de instalación es de <strong class="bold-keyword">S/ 120.00</strong> incluido IGV, el cual puedes fraccionar en tres (03) cuotas sin intereses.</p>`;
     }
   }
-
-  // Calcular servicios SVA por categoría para ordenarlos
-  const tvSVA = [];
-  const meshSVA = [];
-  const winboxSVA = [];
   
-  Object.keys(selectedSvaOptions).forEach((category) => {
-    if (selectedSvaOptions[category].length > 0) {
-      selectedSvaOptions[category].forEach((optionKey) => {
-        if (category === "tv") {
-          tvSVA.push(optionKey);
-        } else if (category === "mesh") {
-          meshSVA.push(optionKey);
-        } else if (category === "winbox") {
-          winboxSVA.push(optionKey);
-        }
-      });
-    }
-  });
-
-  // Sección de reconexión: la tarifa de reconexión se muestra siempre, y si se ha seleccionado FONO (dentro de SVA),
-  // se inserta el bloque de FONO inmediatamente después.
+  const tvSVA = state.sva.tv;
+  const meshSVA = state.sva.mesh;
+  const winboxSVA = state.sva.winbox;
+  
   let reconnectionSection = `
     <div class="contract-section">
       <p>La tarifa de reconexión es de <strong class="bold-keyword">S/ 6.01</strong>, incluye I.G.V.</p>
   `;
   
-  if (selectedSvaOptions.fono.length > 0) {
-    const option = selectedSvaOptions.fono[0];
-    const { label, description } = getSVALabelAndDescription(option, documentType);
+  if (state.sva.fono.length > 0) {
+    const option = state.sva.fono[0];
+    const { label, description } = getSVALabelAndDescription(option, state.documentType);
     reconnectionSection += `
       <div class="mt-3">
         <h3 class="font-bold text-base">FIJO</h3>
@@ -490,17 +531,14 @@ function updateContract() {
   }
   reconnectionSection += `</div>`;
   
-  // Construir las secciones de SVA en orden: TV, Mesh, Winbox
   let svaOrderedSections = "";
   
-  // 1. Sección de TV (WinTV y DGO)
   if (tvSVA.length > 0) {
     svaOrderedSections += `<div class="contract-section"><div class="mt-3 border-t pt-3">`;
     tvSVA.forEach((sva) => {
-      const { label, description } = getSVALabelAndDescription(sva, documentType);
-      // Aplicar descuento del 50% en primer mes de TV SOLO si NO es promo_condominio Y NO es RUC 20
+      const { label, description } = getSVALabelAndDescription(sva, state.documentType);
       let finalDescription = description;
-      if (documentType !== "ruc" && (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
+      if (state.documentType !== "ruc" && (plan.tipo === "descuento50" || plan.tipo === "gamer_descuento50")) {
         finalDescription = description.replace(
           /El precio mensual de la suscripción es de <strong class="bold-keyword">S\/ ([0-9.]+)<\/strong> incluido IGV\./g,
           (match, price) => {
@@ -509,38 +547,34 @@ function updateContract() {
           }
         );
       }
-      // Si es promo_condominio o RUC 20, NO aplicar descuento (usar descripción original)
       svaOrderedSections += `<h3 class="text-lg font-bold mt-2">${label}</h3><p class="mt-1">${finalDescription}</p>`;
     });
     svaOrderedSections += `</div></div>`;
   }
   
-  // 2. Sección de Mesh
   if (meshSVA.length > 0) {
     svaOrderedSections += `<div class="contract-section"><div class="mt-3 border-t pt-3">`;
     meshSVA.forEach((sva) => {
-      const { label, description } = getSVALabelAndDescription(sva, documentType);
+      const { label, description } = getSVALabelAndDescription(sva, state.documentType);
       svaOrderedSections += `<h3 class="text-lg font-bold mt-2">${label}</h3><p class="mt-1">${description}</p>`;
     });
     svaOrderedSections += `</div></div>`;
   }
   
-  // 3. Sección de Winbox
   if (winboxSVA.length > 0) {
     svaOrderedSections += `<div class="contract-section"><div class="mt-3 border-t pt-3">`;
     winboxSVA.forEach((sva) => {
-      const { label, description } = getSVALabelAndDescription(sva, documentType);
+      const { label, description } = getSVALabelAndDescription(sva, state.documentType);
       svaOrderedSections += `<h3 class="text-lg font-bold mt-2">${label}</h3><p class="mt-1">${description}</p>`;
     });
     svaOrderedSections += `</div></div>`;
   }
-
-  let contractText = `
-    <div class="space-y-3 fade-in">
-      <!-- Sección SPEECH -->
+  
+  let contractHTML = `
+    <div class="fade-in">
       <div class="contract-section speech-section">
         <p class="font-bold text-base mb-2">SPEECH:</p>
-        <p>${generateSpeech(plan, fiberSpeed, documentType, selectedSvaOptions, installmentOption)}</p>
+        <p>${generateSpeech(plan, state.fiberSpeed, state.documentType, state.sva, state.installment)}</p>
       </div>
       
       <p class="text-sm">
@@ -548,22 +582,19 @@ function updateContract() {
       </p>
       ${datosText}
       
-      <!-- Sección FIBRA (siempre visible) -->
       <div class="contract-section">
         <h3 class="font-bold text-base">FIBRA</h3>
         <p>
-          El servicio de internet fijo postpago de WIN es ilimitado, 100% fibra óptica, con velocidad simétrica de <strong class="bold-keyword"><span style="font-size:1.2em;">${getDisplaySpeed(fiberSpeed)} Mbps</span></strong> de carga y descarga, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vm} Mbps</span></strong> de carga y descarga, incluye un equipo terminal router y conector en comodato, el cual deberá devolver en buenas condiciones; caso contrario, pagarás su valor. El contrato tendrá plazo indeterminado y podrá ser resuelto de acuerdo a la normativa de condiciones de uso.
+          El servicio de internet fijo postpago de WIN es ilimitado, 100% fibra óptica, con velocidad simétrica de <strong class="bold-keyword"><span style="font-size:1.2em;">${getDisplaySpeed(state.fiberSpeed)} Mbps</span></strong> de carga y descarga, con un mínimo garantizado de <strong class="bold-keyword"><span style="font-size:1.2em;">${plan.vm} Mbps</span></strong> de carga y descarga, incluye un equipo terminal router y conector en comodato, el cual deberá devolver en buenas condiciones; caso contrario, pagarás su valor. El contrato tendrá plazo indeterminado y podrá ser resuelto de acuerdo a la normativa de condiciones de uso.
         </p>
         <br>
         <p>${pricingText}</p>
       </div>
       
-      ${documentType === "ruc" ? installationText : ""}
+      ${state.documentType === "ruc" ? installationText : ""}
       
-      <!-- Sección de TARIFA DE RECONEXIÓN (siempre mostrada) -->
       ${reconnectionSection}
       
-      <!-- Sección de Facturación y demás datos -->
       <div class="contract-section">
         <p>
           La fecha de facturación es el <strong class="bold-keyword">14</strong> de cada mes, y la fecha de vencimiento es el <strong class="bold-keyword">28</strong> del mismo mes.
@@ -586,167 +617,117 @@ function updateContract() {
         </p>
       </div>
       
-      <!-- Sección de Servicios Adicionales ordenados: TV, Mesh, Winbox -->
       ${svaOrderedSections}
       
-      <!-- Mensaje final -->
       <div class="contract-section">
         <p class="mt-3 text-center font-bold text-blue-600">BIENVENIDO A LA FAMILIA WIN.</p>
       </div>
     </div>
   `;
-  document.getElementById("contractContent").innerHTML = contractText;
+  
+  document.getElementById("contractContent").innerHTML = contractHTML;
 }
 
-function updateSelectedSvaDisplay() {
-  let displayText = "";
-  Object.keys(selectedSvaOptions).forEach((category) => {
-    if (selectedSvaOptions[category].length > 0) {
-      const labels = selectedSvaOptions[category].map(
-        (key) => svaConstants[category][key].label
-      );
-      displayText += `<strong>${category.toUpperCase()}:</strong> ${labels.join(", ")}<br>`;
-    }
-  });
-  document.getElementById("selectedSvaDisplay").innerHTML = displayText;
-}
-
-// Función para reiniciar todos los SVA
-function resetSva() {
-  selectedSvaOptions = {
-    fono: [],
-    tv: [],
-    mesh: [],
-    winbox: []
-  };
-  updateSelectedSvaDisplay();
-}
-
-function openSvaModal(category) {
-  const modal = document.getElementById("svaModal");
-  const modalTitle = document.getElementById("svaModalTitle");
-  const modalOptions = document.getElementById("svaModalOptions");
-
-  modalTitle.textContent = `Seleccionar opciones para ${category.toUpperCase()}`;
-  const options = svaConstants[category];
-  let optionsHtml = "";
-  for (const key in options) {
-    const checked = selectedSvaOptions[category].includes(key) ? "checked" : "";
-    optionsHtml += `
-      <div>
-        <label class="inline-flex items-center">
-          <input type="checkbox" class="sva-modal-option" value="${key}" ${checked} />
-          <span class="ml-1">${options[key].label}</span>
-        </label>
-      </div>
-    `;
-  }
-  modalOptions.innerHTML = optionsHtml;
-  modal.setAttribute("data-category", category);
-
-  // Agregar lógica de exclusión mutua según las reglas definidas
-  modalOptions.querySelectorAll(".sva-modal-option").forEach((input) => {
-    input.addEventListener("change", function () {
-      const value = this.value;
-      const groups = svaMutualExclusionRules[category] || [];
-      groups.forEach((group) => {
-        if (group.includes(value) && this.checked) {
-          group.forEach((item) => {
-            if (item !== value) {
-              const otherInput = modalOptions.querySelector(
-                `.sva-modal-option[value="${item}"]`
-              );
-              if (otherInput) {
-                otherInput.checked = false;
-              }
-            }
-          });
-        }
-      });
-    });
-  });
-
-  modal.classList.remove("hidden");
-}
-
-function closeSvaModal() {
-  const modal = document.getElementById("svaModal");
-  modal.classList.add("hidden");
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  updateFiberSpeeds();
-  updateInstallmentSection();
+/***************************************
+ * INICIALIZACIÓN
+ ***************************************/
+document.addEventListener("DOMContentLoaded", function() {
+  renderFiberPlans();
+  updateSvaChips();
   updateContract();
-  updateSelectedSvaDisplay();
-
-  // Eventos para los elementos del formulario
-  const formElements = document.querySelectorAll(
-    "#contractForm select, #contractForm input"
-  );
-  formElements.forEach((el) => {
-    el.addEventListener("change", function () {
-      if (el.id === "location" || el.id === "documentType") {
-        updateFiberSpeeds();
-      }
-      if (el.id === "documentType") {
-        updateInstallmentSection();
-      }
-      // Al cambiar la velocidad, reiniciamos todos los SVA
-      if (el.id === "fiberSpeed") {
-        resetSva();
-      }
+  
+  // Botones de ubicación
+  document.querySelectorAll('[data-location]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-location]').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      state.location = this.getAttribute('data-location');
+      state.fiberSpeed = null;
+      state.sva = { fono: [], tv: [], mesh: [], winbox: [] };
+      renderFiberPlans();
+      updateSvaChips();
       updateContract();
     });
   });
-
-  // Eventos para los botones de ofertas del sidebar derecho
-  document.querySelectorAll(".offer-button").forEach((button) => {
-    button.addEventListener("click", function () {
-      const fiber = parseFloat(button.getAttribute("data-fiber"));
-      const svaData = JSON.parse(button.getAttribute("data-sva"));
-      const fiberSpeedSelect = document.getElementById("fiberSpeed");
-      if (fiberSpeedSelect) {
-        fiberSpeedSelect.value = fiber;
+  
+  // Botones de tipo de documento
+  document.querySelectorAll('[data-doctype]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-doctype]').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      state.documentType = this.getAttribute('data-doctype');
+      
+      const installmentSection = document.getElementById('installmentSection');
+      if (state.documentType === "ruc") {
+        installmentSection.classList.remove('hidden');
+      } else {
+        installmentSection.classList.add('hidden');
       }
-      // Reiniciamos los SVA al aplicar una oferta
-      resetSva();
-      svaData.forEach((optionKey) => {
+      
+      state.fiberSpeed = null;
+      state.sva = { fono: [], tv: [], mesh: [], winbox: [] };
+      renderFiberPlans();
+      updateSvaChips();
+      updateContract();
+    });
+  });
+  
+  // Botones de instalación
+  document.querySelectorAll('[data-installment]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-installment]').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      state.installment = this.getAttribute('data-installment');
+      updateContract();
+    });
+  });
+  
+  // Chips de SVA
+  document.querySelectorAll('.chip-sva').forEach(chip => {
+    chip.addEventListener('click', function() {
+      const service = this.getAttribute('data-service');
+      const key = this.getAttribute('data-key');
+      
+      if (service === 'tv' && key) {
+        if (state.sva.tv.includes(key)) {
+          state.sva.tv = [];
+        } else {
+          state.sva.tv = [key];
+        }
+        updateSvaChips();
+        updateContract();
+      } else if (service === 'fono' || service === 'mesh' || service === 'winbox') {
+        openSvaModal(service);
+      }
+    });
+  });
+  
+  // Modal SVA
+  document.getElementById('btnCloseModal').addEventListener('click', () => closeSvaModal(false));
+  document.getElementById('btnCancel').addEventListener('click', () => closeSvaModal(false));
+  document.getElementById('btnSave').addEventListener('click', () => closeSvaModal(true));
+  
+  // Planes frecuentes
+  document.querySelectorAll('.btn-frequent').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const fiber = parseFloat(this.getAttribute('data-fiber'));
+      const svaData = JSON.parse(this.getAttribute('data-sva'));
+      
+      state.fiberSpeed = fiber;
+      state.sva = { fono: [], tv: [], mesh: [], winbox: [] };
+      
+      svaData.forEach(optionKey => {
         for (const category in svaConstants) {
           if (svaConstants[category][optionKey]) {
-            selectedSvaOptions[category].push(optionKey);
+            state.sva[category].push(optionKey);
             break;
           }
         }
       });
+      
+      renderFiberPlans();
+      updateSvaChips();
       updateContract();
-      updateSelectedSvaDisplay();
     });
-  });
-
-  // Eventos para los botones de categoría SVA del sidebar izquierdo
-  document.querySelectorAll(".sva-category-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-      const category = button.getAttribute("data-category");
-      openSvaModal(category);
-    });
-  });
-
-  // Botón cancelar del modal
-  document.getElementById("svaModalCancel").addEventListener("click", function () {
-    closeSvaModal();
-  });
-
-  // Botón guardar del modal
-  document.getElementById("svaModalSave").addEventListener("click", function () {
-    const modal = document.getElementById("svaModal");
-    const category = modal.getAttribute("data-category");
-    const checkedOptions = Array.from(
-      document.querySelectorAll("#svaModalOptions .sva-modal-option:checked")
-    ).map((input) => input.value);
-    selectedSvaOptions[category] = checkedOptions;
-    updateSelectedSvaDisplay();
-    updateContract();
-    closeSvaModal();
   });
 });
